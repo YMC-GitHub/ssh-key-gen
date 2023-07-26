@@ -2,6 +2,14 @@
 
 generate ssh key file .
 
+## features
+- [x] ssh key gen
+- [x] support custom topic,email and date 
+
+## in plans
+
+- ssh key del,lst through topic,email,date command
+
 ## Download
 
 
