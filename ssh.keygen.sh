@@ -61,38 +61,46 @@ function zero_app_use_opt(){
     o=$(echo $1 | sed -E "s/ -- +.*//g")
     o=$(echo $o | sed -E "s/^ +//g")
     o=$(echo $o | sed -E "s/-+//g")
-    ol=(${o//,/ })
+    o=$(echo $o | sed -E "s/,+/ /g")
     # echo $o
-    # echo ${ol[0]}
-    # echo ${ol[1]}
-    # echo ${ol[2]}
+    oa=(${o// / })
+    # echo $o
+    # echo ${oa[0]}
+    # echo ${oa[1]}
+    # echo ${oa[2]}
 
-    # zero_app_sarg=$(zero_str_join "$zero_app_sarg" ${ol[0]} "" ":")
-    # zero_app_larg=$(zero_str_join "$zero_app_larg" ${ol[1]} ", ":")
+    # zero_app_sarg=$(zero_str_join "$zero_app_sarg" ${oa[0]} "" ":")
+    # zero_app_larg=$(zero_str_join "$zero_app_larg" ${oa[1]} ", ":")
 
 
-    ot=${ol[2]}
-    os=${ol[0]}
-    oc=${ol[1]}
+    os=${oa[0]}
+    ol=${oa[1]}
+    ot=${oa[2]}
+    # eg. nc,<value>
+    [ -z $ot ] && {
+        ot=$ol
+    }
 
     # eg. os is --eml
     [ $os ] && {
-        [ ${#os} -ne 1 ] && { oc=$os; os=""; }
+        [ ${#os} -ne 1 ] && { ol=$os; os=""; }
     }
 
     
+    # echo $os,$ol,$ot
+
     if [[ $ot =~ "]" ]];then
-        #  echo ${ol[0]}
+        #  echo ${oa[0]}
         zero_app_sarg=$(zero_str_join "$zero_app_sarg" $os "" ":")
-        zero_app_larg=$(zero_str_join "$zero_app_larg" $oc "," ":")
+        zero_app_larg=$(zero_str_join "$zero_app_larg" $ol "," ":")
     elif [[ $ot =~ ">" ]];then
-        # echo ${ol[0]}
+        # echo ${oa[0]}
         zero_app_sarg=$(zero_str_join "$zero_app_sarg" $os "" "::")
-        zero_app_larg=$(zero_str_join "$zero_app_larg" $oc "," "::")
+        zero_app_larg=$(zero_str_join "$zero_app_larg" $ol "," "::")
     else
-        # echo ${ol[0]}
+        # echo ${oa[0]}
         zero_app_sarg=$(zero_str_join "$zero_app_sarg" $os "")
-        zero_app_larg=$(zero_str_join "$zero_app_larg" $oc ",")
+        zero_app_larg=$(zero_str_join "$zero_app_larg" $ol ",")
     fi
 
 }
@@ -249,6 +257,17 @@ fi
 
 # https://unix.stackexchange.com/questions/628942/bash-script-with-optional-input-arguments-using-getopt
 
+
+function zero_app_fix_val(){
+    if [[ $1 =~ "--" ]] ;then
+        #  "--name"
+        echo ${2}
+    else
+        # "-n"
+        echo ${2:1}
+    fi
+}
+
 vars=$(getopt -o $zero_app_sarg --long $zero_app_larg -- "$@")
 eval set -- "$vars"
 
@@ -270,19 +289,19 @@ topic="gh,ge,gl"
 for opt; do
     case "$opt" in
       -i|--input)
-        inputdir=${2:1}
+        inputdir=`zero_app_fix_val "$opt" "$2"`
         shift 2
         ;;
       -o|--output)
-        outputdir=${2:1}
+        outputdir=`zero_app_fix_val "$opt" "$2"`
         shift 2
         ;;
       -t|--topic)
-        topic=${2:1}
+        topic=`zero_app_fix_val "$opt" "$2"`
         shift 2
         ;;
       -e|--email)
-        email=${2:1}
+        email=`zero_app_fix_val "$opt" "$2"`
         shift 2
         ;;
       --dryrun)
