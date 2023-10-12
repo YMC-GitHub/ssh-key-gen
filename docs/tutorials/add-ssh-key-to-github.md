@@ -8,9 +8,11 @@
 # lst ssh
 ls ~/.ssh/ymc.github@gmail.com/230724
 
+
 # clip public key to clipboad
 # ps:
 clip < ~/.ssh/gh/230724.pub
+
 
 # add to github
 # ...
