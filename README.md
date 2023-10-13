@@ -22,10 +22,10 @@ git clone -b main "$GC_URL"
 ```
 
 ## Usage
-- [x] get help (ps:`./ssh.keygen.sh -h`)
+- [x] get help (ps:`./index.sh -h`)
 
 ```bash
-# ./ssh.keygen.sh -h
+# ./index.sh -h
 usage: {ns} [command] [option]
 command:
     version -- output cli version
@@ -43,7 +43,7 @@ options:
     -v,--version -- info version
 ```
 
-- [x] get version (ps:`./ssh.keygen.sh -v`)
+- [x] get version (ps:`./index.sh -v`)
 - [ ] download but not saving script to file and gen key . (ps:``)
 
 ```bash
